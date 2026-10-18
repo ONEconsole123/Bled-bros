@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#120a14">
+<title>Bled Bros</title>
+<style>
+  html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: #120a14; overflow: hidden;
+    touch-action: none; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+  #wrap { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+  #game { image-rendering: pixelated; image-rendering: crisp-edges; display: block; background: #000; }
+  #touch { position: fixed; inset: 0; pointer-events: none; display: none; }
+  .tb { position: absolute; width: 68px; height: 68px; border-radius: 50%;
+    background: rgba(255, 240, 220, 0.16); border: 3px solid rgba(255, 240, 220, 0.38);
+    color: rgba(255, 245, 230, 0.85); font: bold 26px monospace; display: flex; align-items: center; justify-content: center;
+    box-sizing: border-box; }
+  .tb.on { background: rgba(255, 210, 120, 0.42); }
+  .tb-left { left: calc(18px + env(safe-area-inset-left)); bottom: 22px; border-radius: 16px; }
+  .tb-right { left: calc(98px + env(safe-area-inset-left)); bottom: 22px; border-radius: 16px; }
+  .tb-jump { right: calc(20px + env(safe-area-inset-right)); bottom: 30px; width: 78px; height: 78px; }
+  .tb-attack { right: calc(110px + env(safe-area-inset-right)); bottom: 16px; }
+  .tb-pause { right: calc(16px + env(safe-area-inset-right)); top: 12px; width: 44px; height: 44px; font-size: 16px; border-radius: 12px; }
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="game" width="480" height="270"></canvas></div>
+<div id="touch"></div>
+<script>
+/*__GAME__*/
+</script>
+</body>
+</html>

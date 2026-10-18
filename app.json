@@ -1,17 +1,22 @@
 {
   "expo": {
-    "name": "bled-bros",
+    "name": "Bled Bros",
     "slug": "bled-bros",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "landscape",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#120a14",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "requireFullScreen": true,
+      "bundleIdentifier": "com.bledbros.game"
     },
     "android": {
+      "package": "com.bledbros.game",
+      "versionCode": 1,
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#5a2a60",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -19,6 +24,23 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "LANDSCAPE"
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 260,
+          "resizeMode": "contain",
+          "backgroundColor": "#120a14"
+        }
+      ]
+    ]
   }
 }
