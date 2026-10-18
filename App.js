@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { BackHandler, StyleSheet, View } from 'react-native';
+import { BackHandler, Platform, StyleSheet, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { WebView } from 'react-native-webview';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import { NavigationBar } from 'expo-navigation-bar';
+import * as NavigationBar from 'expo-navigation-bar';
 import { useKeepAwake } from 'expo-keep-awake';
 import * as SplashScreen from 'expo-splash-screen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -21,6 +21,7 @@ export default function App() {
 
   useEffect(() => {
     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE).catch(() => {});
+    if (Platform.OS === 'android') NavigationBar.setVisibilityAsync('hidden').catch(() => {});
     AsyncStorage.getItem(SAVE_KEY)
       .then((s) => setSave(s))
       .catch(() => setSave(null));
@@ -53,7 +54,6 @@ export default function App() {
   return (
     <View style={styles.root}>
       <StatusBar hidden />
-      <NavigationBar hidden />
       <WebView
         ref={webRef}
         style={styles.web}

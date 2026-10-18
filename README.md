@@ -40,6 +40,8 @@ Les manettes sont aussi supportées.
 
 ## Lancer le projet
 
+Le projet est en **Expo SDK 54**, comme Swappit : il s'ouvre avec la même version d'Expo Go.
+
 ```bash
 npm install
 npx expo start        # puis scanne le QR code avec Expo Go (Android)
