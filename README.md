@@ -40,7 +40,7 @@ Les manettes sont aussi supportées.
 
 ## Lancer le projet
 
-Le projet est en **Expo SDK 54**, comme Swappit : il s'ouvre avec la même version d'Expo Go.
+Le projet est en **Expo SDK 57**, la version de l'Expo Go actuellement sur l'App Store. Si Expo Go se met à jour vers une nouvelle SDK, le projet devra suivre (voir https://docs.expo.dev/workflow/upgrading-expo-sdk-walkthrough/).
 
 ```bash
 npm install
