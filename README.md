@@ -59,7 +59,7 @@ Ce que la version web fait en plus de l'app :
 
 - **Elle s'installe comme une app** (PWA). Sur Android, Chrome propose « Installer » ; sur iPhone, Safari → Partager → « Sur l'écran d'accueil ». Elle se lance alors en plein écran.
 - **Elle marche hors-ligne** une fois visitée.
-- **Sur téléphone tenu en portrait**, elle demande de tourner l'écran. Sur Android, elle passe en plein écran paysage au premier toucher.
+- **Sur téléphone tenu en portrait**, le jeu s'affiche déjà tourné : il suffit de tourner le téléphone, même si la rotation automatique est désactivée. Sur Android, il passe aussi en plein écran au premier toucher.
 - **Elle se met en pause** quand on change d'onglet ou d'app.
 - **Elle affiche un aperçu** (image + description) quand on partage le lien sur WhatsApp, Instagram ou X.
 - **Sur ordinateur**, la touche F bascule le plein écran.
