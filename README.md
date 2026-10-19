@@ -33,7 +33,7 @@ Tout est généré par le code (pixel art et sons). Il n'y a aucun fichier image
 |---|---|---|
 | Bouger | ← → ou A/D | ◀ ▶ |
 | Sauter (tenir = plus haut, Hajj Moha plane) | Espace / Z / ↑ | A |
-| Attaquer (Amghar : dash en courant) | X / J | B |
+| Attaquer (Amghar : dash en courant) | X / J ou clic gauche | B |
 | Pause | Entrée / Échap | II |
 
 Les manettes sont aussi supportées.

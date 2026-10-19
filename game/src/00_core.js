@@ -76,7 +76,7 @@ function writeSave() {
 // ---------- input ----------
 const ACTIONS = ['left', 'right', 'up', 'down', 'jump', 'attack', 'pause'];
 const Input = {
-  key: {}, touch: {}, pad: {}, down: {}, prev: {},
+  key: {}, touch: {}, pad: {}, mouse: {}, down: {}, prev: {},
   tap: null,           // {x,y} in game coords for this frame
   usedTouch: false,
   held(a) { return !!this.down[a]; },
@@ -84,6 +84,8 @@ const Input = {
   update() {
     pollGamepad();
     for (const a of ACTIONS) this.down[a] = !!(this.key[a] || this.touch[a] || this.pad[a]);
+    // left mouse button attacks, only while actually playing (in menus a click is a tap)
+    if (this.mouse.attack && Game.scene === PlayScene && !PlayScene.paused && Game.level && Game.level.state !== 'intro') this.down.attack = true;
   },
   endFrame() {
     for (const a of ACTIONS) this.prev[a] = this.down[a];
@@ -110,11 +112,11 @@ window.addEventListener('keyup', (e) => {
   const a = KEYMAP[e.code];
   if (a) { Input.key[a] = false; e.preventDefault(); }
 });
-window.addEventListener('blur', () => { Input.key = {}; Input.touch = {}; });
+window.addEventListener('blur', () => { Input.key = {}; Input.touch = {}; Input.mouse = {}; });
 // leaving the tab / app: release keys, pause the game and silence the music
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
-    Input.key = {}; Input.touch = {};
+    Input.key = {}; Input.touch = {}; Input.mouse = {};
     if (Audio.ac) Audio.ac.suspend();
     if (Game.onHide) Game.onHide();
   } else if (Audio.ac) Audio.ac.resume();
@@ -213,7 +215,12 @@ document.addEventListener('touchstart', (e) => { handleTouchStartTap(e); handleT
 document.addEventListener('touchmove', handleTouches, { passive: false });
 document.addEventListener('touchend', handleTouches, { passive: false });
 document.addEventListener('touchcancel', handleTouches, { passive: false });
-cv.addEventListener('mousedown', (e) => { Audio.unlock(); Input.tap = toGame(e.clientX, e.clientY); });
+cv.addEventListener('mousedown', (e) => {
+  Audio.unlock();
+  Input.tap = toGame(e.clientX, e.clientY);
+  if (e.button === 0 && !Input.usedTouch) Input.mouse.attack = true;
+});
+window.addEventListener('mouseup', (e) => { if (e.button === 0) Input.mouse.attack = false; });
 
 // messages from the native shell (Android back button)
 function onNativeMessage(ev) {
