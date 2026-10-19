@@ -9,13 +9,36 @@ const ctx = cv.getContext('2d');
 cv.width = W; cv.height = H;
 ctx.imageSmoothingEnabled = false;
 
+// On a phone held upright the browser often won't rotate (auto-rotate off, or an app that stays
+// in portrait): the whole stage is then drawn turned 90deg, so turning the phone sideways shows
+// the game upright either way. Touch coordinates are converted back into stage space.
+const stage = document.getElementById('stage');
+let rotated = false;
 function resize() {
-  const s = Math.min(window.innerWidth / W, window.innerHeight / H);
+  const iw = window.innerWidth, ih = window.innerHeight;
+  const coarse = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+  rotated = coarse && ih > iw && !window.ReactNativeWebView;
+  const sw = rotated ? ih : iw, sh = rotated ? iw : ih;
+  stage.style.width = sw + 'px';
+  stage.style.height = sh + 'px';
+  stage.style.left = rotated ? iw + 'px' : '0px';
+  stage.style.transform = rotated ? 'rotate(90deg)' : 'none';
+  const s = Math.min(sw / W, sh / H);
   cv.style.width = Math.floor(W * s) + 'px';
   cv.style.height = Math.floor(H * s) + 'px';
   layoutTouch();
 }
 window.addEventListener('resize', resize);
+window.addEventListener('orientationchange', () => setTimeout(resize, 250));
+if (window.visualViewport) window.visualViewport.addEventListener('resize', resize);
+// screen point -> stage point (undoes the 90deg rotation)
+function toStage(x, y) { return rotated ? { x: y, y: window.innerWidth - x } : { x, y }; }
+// element box in stage space (layout offsets ignore CSS transforms)
+function rectOf(el) {
+  let l = 0, t = 0, e = el;
+  while (e && e !== stage) { l += e.offsetLeft; t += e.offsetTop; e = e.offsetParent; }
+  return { left: l, top: t, right: l + el.offsetWidth, bottom: t + el.offsetHeight, width: el.offsetWidth, height: el.offsetHeight };
+}
 
 // ---------- utils ----------
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
@@ -173,13 +196,14 @@ function layoutTouch() {
   if (!touchUI) return;
   touchUI.style.display = Input.usedTouch ? 'block' : 'none';
 }
+// both take screen (client) coordinates
 function toGame(clientX, clientY) {
-  const r = cv.getBoundingClientRect();
-  return { x: ((clientX - r.left) / r.width) * W, y: ((clientY - r.top) / r.height) * H };
+  const p = toStage(clientX, clientY), r = rectOf(cv);
+  return { x: ((p.x - r.left) / r.width) * W, y: ((p.y - r.top) / r.height) * H };
 }
-function hitButton(el, x, y, pad) {
-  const r = el.getBoundingClientRect();
-  return x >= r.left - pad && x <= r.right + pad && y >= r.top - pad && y <= r.bottom + pad;
+function hitButton(el, clientX, clientY, pad) {
+  const p = toStage(clientX, clientY), r = rectOf(el);
+  return p.x >= r.left - pad && p.x <= r.right + pad && p.y >= r.top - pad && p.y <= r.bottom + pad;
 }
 function handleTouches(e) {
   e.preventDefault();
@@ -187,18 +211,18 @@ function handleTouches(e) {
   Audio.unlock();
   const t = {};
   for (const tc of e.touches) {
-    const x = tc.clientX, y = tc.clientY;
+    const { x, y } = toStage(tc.clientX, tc.clientY);
     // d-pad: left half of the dpad zone = left, right half = right (thumb can slide)
-    const lr = tButtons.left.getBoundingClientRect();
-    const rr = tButtons.right.getBoundingClientRect();
+    const lr = rectOf(tButtons.left);
+    const rr = rectOf(tButtons.right);
     if (y > lr.top - 40 && x < rr.right + 30) {
       if (x < (lr.right + rr.left) / 2) t.left = true; else t.right = true;
       if (y < lr.top - 10) t.up = true;
       continue;
     }
-    if (hitButton(tButtons.jump, x, y, 18)) { t.jump = true; continue; }
-    if (hitButton(tButtons.attack, x, y, 18)) { t.attack = true; continue; }
-    if (hitButton(tButtons.pause, x, y, 10)) { t.pause = true; continue; }
+    if (hitButton(tButtons.jump, tc.clientX, tc.clientY, 18)) { t.jump = true; continue; }
+    if (hitButton(tButtons.attack, tc.clientX, tc.clientY, 18)) { t.attack = true; continue; }
+    if (hitButton(tButtons.pause, tc.clientX, tc.clientY, 10)) { t.pause = true; continue; }
   }
   Input.touch = t;
   for (const n of ['left', 'right', 'jump', 'attack', 'pause']) tButtons[n].classList.toggle('on', !!t[n]);
