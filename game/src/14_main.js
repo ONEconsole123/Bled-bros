@@ -5,6 +5,7 @@ const Game = {
   scene: null, level: null,
   set(s) { this.scene = s; s.enter && s.enter(); },
   onBack() { if (this.scene && this.scene.onBack) this.scene.onBack(); },
+  onHide() { if (this.scene === PlayScene) PlayScene.pause(); },
   startLevel(index, cp, fresh) {
     if (fresh) { RUN.coins = RUN.coins || 0; }
     LivesScene.index = index; LivesScene.cp = cp;

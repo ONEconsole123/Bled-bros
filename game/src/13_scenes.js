@@ -14,6 +14,10 @@ const BootScene = {
     ctx.fillStyle = '#120a14'; ctx.fillRect(0, 0, W, H);
     drawLogo(W / 2, 80, this.t);
     if (Math.floor(this.t / 30) % 2) drawText(Input.usedTouch ? 'TOUCHE L\'ECRAN' : 'APPUIE SUR ESPACE OU TOUCHE L\'ECRAN', W / 2, 170, '#ffffff', 1, '#1a0f14', 'center');
+    if (!Input.usedTouch && !window.ReactNativeWebView) {
+      drawText('FLECHES: BOUGER  ESPACE: SAUTER  X: ATTAQUER', W / 2, 204, '#c8b8a8', 1, '#1a0f14', 'center');
+      drawText('ENTREE: PAUSE  F: PLEIN ECRAN', W / 2, 216, '#c8b8a8', 1, '#1a0f14', 'center');
+    }
     drawText('UN JEU DU BLED', W / 2, 250, '#8a7a8a', 1, '#1a0f14', 'center');
   },
 };

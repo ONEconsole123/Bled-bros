@@ -49,13 +49,29 @@ npx expo start        # puis scanne le QR code avec Expo Go (Android)
 
 `npm start` reconstruit automatiquement le jeu (`game/` → `src/gameHtml.js`) avant de lancer Metro.
 
-Pour jouer directement dans un navigateur :
+## Version web
+
+Le même jeu sort aussi en site web : `npm run build:game` génère le dossier `web/` en plus de l'app.
+
+Le site est hébergé sur **Vercel**, relié à ce dépôt : chaque `git push` sur `main` met le site à jour tout seul. La config est dans `vercel.json`.
+
+Ce que la version web fait en plus de l'app :
+
+- **Elle s'installe comme une app** (PWA). Sur Android, Chrome propose « Installer » ; sur iPhone, Safari → Partager → « Sur l'écran d'accueil ». Elle se lance alors en plein écran.
+- **Elle marche hors-ligne** une fois visitée.
+- **Sur téléphone tenu en portrait**, elle demande de tourner l'écran. Sur Android, elle passe en plein écran paysage au premier toucher.
+- **Elle se met en pause** quand on change d'onglet ou d'app.
+- **Elle affiche un aperçu** (image + description) quand on partage le lien sur WhatsApp, Instagram ou X.
+- **Sur ordinateur**, la touche F bascule le plein écran.
+
+Pour la tester sur ta machine :
 
 ```bash
-npm run build:game    # génère game/dist/index.html
+npm run build:game
+npx serve web        # puis ouvre l'adresse affichée
 ```
 
-Ouvre ensuite `game/dist/index.html` dans un navigateur.
+Les images du site (icônes, aperçu de partage) sont dans `game/web-static/`.
 
 ## Architecture
 
@@ -63,7 +79,8 @@ Ouvre ensuite `game/dist/index.html` dans un navigateur.
 App.js              Shell Expo : WebView plein écran, paysage, sauvegarde AsyncStorage, bouton retour Android
 src/gameHtml.js     Généré : le jeu complet en une seule page HTML (ne pas éditer à la main)
 game/template.html  Page HTML + contrôles tactiles
-game/build.js       Concatène game/src/*.js dans le template
+game/build.js       Construit l'app (src/gameHtml.js) et le site (web/) depuis game/src/*.js
+game/web-static/    Icônes et image de partage du site
 game/src/
   00_core.js        Canvas 480×270, entrées (clavier/tactile/manette), sauvegarde, police pixel
   01_audio.js       Synthé chiptune, maqams, percussions gnaoua, effets sonores

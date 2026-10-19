@@ -103,6 +103,7 @@ const KEYMAP = {
 window.addEventListener('keydown', (e) => {
   const a = KEYMAP[e.code];
   if (a) { Input.key[a] = true; e.preventDefault(); }
+  if (e.code === 'KeyF' && !e.repeat) toggleFullscreen();
   Audio.unlock();
 });
 window.addEventListener('keyup', (e) => {
@@ -110,6 +111,33 @@ window.addEventListener('keyup', (e) => {
   if (a) { Input.key[a] = false; e.preventDefault(); }
 });
 window.addEventListener('blur', () => { Input.key = {}; Input.touch = {}; });
+// leaving the tab / app: release keys, pause the game and silence the music
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    Input.key = {}; Input.touch = {};
+    if (Audio.ac) Audio.ac.suspend();
+    if (Game.onHide) Game.onHide();
+  } else if (Audio.ac) Audio.ac.resume();
+});
+
+// web on phones: go fullscreen + landscape on the first touch (Android browsers; iOS ignores it).
+// The Expo app is already fullscreen and locked to landscape.
+let fsTried = false;
+document.addEventListener('touchend', () => { if (!fsTried) { fsTried = true; goFullscreen(); } }, { passive: true });
+function goFullscreen() {
+  if (window.ReactNativeWebView) return;
+  const el = document.documentElement;
+  if (document.fullscreenElement || !el.requestFullscreen) return;
+  if (window.matchMedia && window.matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches) return;
+  el.requestFullscreen({ navigationUI: 'hide' })
+    .then(() => (screen.orientation && screen.orientation.lock ? screen.orientation.lock('landscape') : null))
+    .catch(() => {});
+}
+function toggleFullscreen() {
+  if (window.ReactNativeWebView) return;
+  if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+  else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
+}
 
 function pollGamepad() {
   Input.pad = {};
